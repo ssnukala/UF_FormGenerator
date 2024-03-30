@@ -1,5 +1,8 @@
 # Change Log
 
+## [5.0.1](https://github.com/lcharette/UF_FormGenerator/compare/5.0.0...5.0.1)
+- Update PHP & JS dependencies
+
 ## [5.0.0](https://github.com/lcharette/UF_FormGenerator/compare/4.0.1...5.0.0)
 - Added support for UserFrosting 5
 - Data passed to forms can be mixed type, not only string. Data will still be casted to string. 
