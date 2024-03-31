@@ -48,7 +48,7 @@ class App implements SprinkleRecipe
     /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getRoutes(): array
     {
@@ -60,7 +60,7 @@ class App implements SprinkleRecipe
     /**
      * Returns a list of all PHP-DI services/container definitions files.
      *
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getServices(): array
     {

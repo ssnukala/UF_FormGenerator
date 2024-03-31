@@ -46,7 +46,7 @@ class FormGenerator implements SprinkleRecipe
     /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return string[]
+     * {@inheritDoc}
      */
     public function getRoutes(): array
     {
@@ -58,7 +58,7 @@ class FormGenerator implements SprinkleRecipe
     /**
      * Returns a list of all PHP-DI services/container definitions files.
      *
-     * @return string[]
+     * {@inheritDoc}
      */
     public function getServices(): array
     {

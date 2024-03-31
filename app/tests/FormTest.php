@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle\FormGenerator\Tests;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Sprinkle\FormGenerator\Element\Input;
 use UserFrosting\Sprinkle\FormGenerator\Element\Select;
 use UserFrosting\Sprinkle\FormGenerator\Exception\ClassNotFoundException;
@@ -50,7 +50,7 @@ class FormTest extends TestCase
     {
         // Get Schema
         $loader = new YamlFileLoader($this->basePath . $file);
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
 
         // Generate the form
         $form = new Form($schema, $data);
@@ -335,7 +335,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Get elements before registered
@@ -378,7 +378,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         $form->registerType('text', FakeElementStub::class);
@@ -395,7 +395,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Set expectations and act
@@ -410,7 +410,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Get elements before registered
@@ -436,7 +436,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Set form namespace
@@ -466,7 +466,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema, [
             'name' => 'The Foo', // Will be overwritten by setValue
         ]);
@@ -498,7 +498,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Set form namespace
@@ -531,7 +531,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/select.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Test the form generation
@@ -569,7 +569,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/select.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Make sure status won't change value
@@ -626,7 +626,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/bad.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Set form namespace
@@ -651,7 +651,7 @@ class FormTest extends TestCase
     {
         // Get Schema & form
         $loader = new YamlFileLoader($this->basePath . '/good.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
         $form = new Form($schema);
 
         // Set expectations

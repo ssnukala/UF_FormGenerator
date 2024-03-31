@@ -14,15 +14,14 @@ namespace UserFrosting\Sprinkle\FormGeneratorExample;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\Twig;
 use UserFrosting\Alert\AlertStream;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Fortress\RequestDataTransformer;
+use UserFrosting\Fortress\Adapter\JqueryValidationJsonAdapter;
 use UserFrosting\Fortress\RequestSchema;
-use UserFrosting\Fortress\ServerSideValidator;
-use UserFrosting\I18n\Translator;
+use UserFrosting\Fortress\Transformer\RequestDataTransformer;
+use UserFrosting\Fortress\Validator\ServerSideValidator;
 use UserFrosting\Sprinkle\Core\Exceptions\ValidationException;
+use UserFrosting\Sprinkle\Core\Util\RouteParserInterface;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\FormGeneratorExample\Data\Project;
 
@@ -61,11 +60,11 @@ class Controller
      * This does NOT render a complete page.  Instead, it renders the HTML for the form, which can be embedded in other pages.
      * The form is rendered in "modal" (for popup) or "panel" mode, depending on the template used
      *
-     * @param Request              $request
-     * @param Response             $response
-     * @param RouteParserInterface $router
-     * @param Translator           $translator
-     * @param Twig                 $view
+     * @param Request                     $request
+     * @param Response                    $response
+     * @param RouteParserInterface        $router
+     * @param Twig                        $view
+     * @param JqueryValidationJsonAdapter $validator
      *
      * @return Response
      */
@@ -73,14 +72,13 @@ class Controller
         Request $request,
         Response $response,
         RouteParserInterface $router,
-        Translator $translator,
         Twig $view,
+        JqueryValidationJsonAdapter $validator,
     ): Response {
         $get = $request->getQueryParams();
 
         // Load validator rules
         $schema = new RequestSchema('schema://forms/formgenerator.json');
-        $validator = new JqueryValidationAdapter($schema, $translator);
 
         // Generate the form
         $form = new Form($schema);
@@ -91,17 +89,18 @@ class Controller
             'submit_button' => 'Create',
             'form_action'   => $router->urlFor('FG.create'),
             'fields'        => $form->generate(),
-            'validators'    => $validator->rules('json', true),
+            'validators'    => $validator->rules($schema),
         ]);
     }
 
     /**
      * Processes the request to create a new project.
      *
-     * @param Request     $request
-     * @param Response    $response
-     * @param AlertStream $ms
-     * @param Translator  $translator
+     * @param Request                $request
+     * @param Response               $response
+     * @param AlertStream            $ms
+     * @param RequestDataTransformer $transformer
+     * @param ServerSideValidator    $validator
      *
      * @return Response
      */
@@ -109,7 +108,8 @@ class Controller
         Request $request,
         Response $response,
         AlertStream $ms,
-        Translator $translator,
+        RequestDataTransformer $transformer,
+        ServerSideValidator $validator,
     ): Response {
         // Request POST data
         $post = (array) $request->getParsedBody();
@@ -118,14 +118,13 @@ class Controller
         $schema = new RequestSchema('schema://forms/formgenerator.json');
 
         // Whitelist and set parameter defaults
-        $transformer = new RequestDataTransformer($schema);
-        $data = $transformer->transform($post);
+        $data = $transformer->transform($schema, $post);
 
         // Validate, and halt on validation errors.
-        $validator = new ServerSideValidator($schema, $translator);
-        if ($validator->validate($data) === false && is_array($validator->errors())) {
+        $errors = $validator->validate($schema, $data);
+        if (count($errors) !== 0) {
             $e = new ValidationException();
-            $e->addErrors($validator->errors());
+            $e->addErrors($errors);
 
             throw $e;
         }
@@ -137,8 +136,8 @@ class Controller
         // $project->save();
 
         // Success message
-        $ms->addMessageTranslated('success', 'Project successfully created (or not)');
-        $ms->addMessageTranslated('info', 'The form data: <br />' . print_r($data, true));
+        $ms->addMessage('success', 'Project successfully created (or not)');
+        $ms->addMessage('info', 'The form data: <br />' . print_r($data, true));
 
         $payload = json_encode([], JSON_THROW_ON_ERROR);
         $response->getBody()->write($payload);
@@ -152,12 +151,12 @@ class Controller
      * This does NOT render a complete page.  Instead, it renders the HTML for the form, which can be embedded in other pages.
      * The form is rendered in "modal" (for popup) or "panel" mode, depending on the template used
      *
-     * @param int                  $project_id
-     * @param Request              $request
-     * @param Response             $response
-     * @param RouteParserInterface $router
-     * @param Translator           $translator
-     * @param Twig                 $view
+     * @param int                         $project_id
+     * @param Request                     $request
+     * @param Response                    $response
+     * @param RouteParserInterface        $router
+     * @param Twig                        $view
+     * @param JqueryValidationJsonAdapter $validator
      *
      * @return Response
      */
@@ -166,8 +165,8 @@ class Controller
         Request $request,
         Response $response,
         RouteParserInterface $router,
-        Translator $translator,
         Twig $view,
+        JqueryValidationJsonAdapter $validator,
     ): Response {
         $get = $request->getQueryParams();
 
@@ -182,7 +181,6 @@ class Controller
 
         // Load validator rules
         $schema = new RequestSchema('schema://forms/formgenerator.json');
-        $validator = new JqueryValidationAdapter($schema, $translator);
 
         // Generate the form
         $form = new Form($schema, $project);
@@ -195,18 +193,19 @@ class Controller
             'form_action'   => $router->urlFor('FG.update', ['project_id' => (string) $project_id]),
             'form_method'   => 'PUT', //Send form using PUT instead of "POST"
             'fields'        => $form->generate(),
-            'validators'    => $validator->rules('json', true),
+            'validators'    => $validator->rules($schema),
         ]);
     }
 
     /**
      * Processes the request to update an existing project's details.
      *
-     * @param int         $project_id
-     * @param Request     $request
-     * @param Response    $response
-     * @param AlertStream $ms
-     * @param Translator  $translator
+     * @param int                    $project_id
+     * @param Request                $request
+     * @param Response               $response
+     * @param AlertStream            $ms
+     * @param RequestDataTransformer $transformer
+     * @param ServerSideValidator    $validator
      *
      * @return Response
      */
@@ -215,7 +214,8 @@ class Controller
         Request $request,
         Response $response,
         AlertStream $ms,
-        Translator $translator,
+        RequestDataTransformer $transformer,
+        ServerSideValidator $validator,
     ): Response {
         // Get the target object & make sure a project was found.
         $project = Project::find($project_id);
@@ -230,14 +230,13 @@ class Controller
         $schema = new RequestSchema('schema://forms/formgenerator.json');
 
         // Whitelist and set parameter defaults
-        $transformer = new RequestDataTransformer($schema);
-        $data = $transformer->transform($post);
+        $data = $transformer->transform($schema, $post);
 
         // Validate, and halt on validation errors.
-        $validator = new ServerSideValidator($schema, $translator);
-        if ($validator->validate($data) === false && is_array($validator->errors())) {
+        $errors = $validator->validate($schema, $data);
+        if (count($errors) !== 0) {
             $e = new ValidationException();
-            $e->addErrors($validator->errors());
+            $e->addErrors($errors);
 
             throw $e;
         }
@@ -247,8 +246,8 @@ class Controller
         // $project->fill($data)->save();
 
         //Success message!
-        $ms->addMessageTranslated('success', 'Project successfully updated (or not)');
-        $ms->addMessageTranslated('info', 'The form data: <br />' . print_r($data, true));
+        $ms->addMessage('success', 'Project successfully updated (or not)');
+        $ms->addMessage('info', 'The form data: <br />' . print_r($data, true));
 
         $payload = json_encode([], JSON_THROW_ON_ERROR);
         $response->getBody()->write($payload);
@@ -281,7 +280,7 @@ class Controller
         // $project->delete();
 
         // Nice and simple message
-        $ms->addMessageTranslated('success', 'Project successfully deleted (or not)');
+        $ms->addMessage('success', 'Project successfully deleted (or not)');
 
         $payload = json_encode([], JSON_THROW_ON_ERROR);
         $response->getBody()->write($payload);

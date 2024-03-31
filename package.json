@@ -1,14 +1,16 @@
 {
     "name": "@lcharette/formgenerator",
-    "version": "5.0.0",
-    "description": "Form Generator Sprinkle for UserFrosting 5",
+    "version": "5.1.0",
+    "description": "Form Generator Sprinkle for UserFrosting 5.1",
     "funding": "https://ko-fi.com/lcharette",
     "license": "MIT",
     "author": "Louis Charette (https://bbqsoftwares.com/)",
     "keywords": [
         "UserFrosting",
         "Sprinkle",
-        "form"
+        "form",
+        "formgenerator",
+        "Form Generator"
     ],
     "homepage": "https://github.com/lcharette/UF_FormGenerator#readme",
     "repository": {
@@ -18,8 +20,14 @@
     "bugs": {
         "url": "https://github.com/lcharette/UF_FormGenerator/issues"
     },
+    "files": [
+        "CHANGELOG.md",
+        "app/assets",
+        "webpack.config.js",
+        "webpack.entries.js"
+    ],
     "dependencies": {
-        "@userfrosting/theme-adminlte": "^5.0"
+        "@userfrosting/theme-adminlte": "~5.1.0"
     },
     "devDependencies": {
         "@symfony/webpack-encore": "^4.4.0",

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 use UserFrosting\Sprinkle\FormGenerator\Element\Alert;
 use UserFrosting\Sprinkle\FormGenerator\Element\Checkbox;
 use UserFrosting\Sprinkle\FormGenerator\Element\Hidden;
@@ -38,37 +38,37 @@ use UserFrosting\Sprinkle\FormGenerator\Exception\InvalidClassException;
 class Form
 {
     /**
-     * @var RequestSchemaRepository The form fields definition
+     * @var RequestSchemaInterface The form fields definition
      */
-    protected $schema;
+    protected RequestSchemaInterface $schema;
 
     /**
      * @var array<string,string|int> The form values
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * @var string Used to wrap form fields in top-level array
      */
-    protected $formNamespace = '';
+    protected string $formNamespace = '';
 
     /**
      * @var array<string,string> List of input type classes registered
      */
-    protected $types = [];
+    protected array $types = [];
 
     /**
      * @var string Default input type for element without one.
      */
-    protected $defaultType = 'text';
+    protected string $defaultType = 'text';
 
     /**
      * Class constructor.
      *
-     * @param RequestSchemaRepository                          $schema
-     * @param array<string>|Collection<mixed>|Model|Repository $data   (default: [])
+     * @param RequestSchemaInterface                                $schema
+     * @param array<string>|Collection<int, mixed>|Model|Repository $data   (default: [])
      */
-    public function __construct(RequestSchemaRepository $schema, $data = [])
+    public function __construct(RequestSchemaInterface $schema, $data = [])
     {
         $this->setSchema($schema);
         $this->setData($data);
@@ -80,7 +80,7 @@ class Form
     /**
      * Set the form current values.
      *
-     * @param array<string>|Collection<mixed>|Model|Repository $data The form values
+     * @param array<string>|Collection<int, mixed>|Model|Repository $data The form values
      *
      * @return self
      */
@@ -102,11 +102,11 @@ class Form
     /**
      * Set the schema for this validator.
      *
-     * @param RequestSchemaRepository $schema A RequestSchemaRepository object, containing the form definition.
+     * @param RequestSchemaInterface $schema A RequestSchema object, containing the form definition.
      *
      * @return self
      */
-    public function setSchema(RequestSchemaRepository $schema)
+    public function setSchema(RequestSchemaInterface $schema)
     {
         $this->schema = $schema;
 

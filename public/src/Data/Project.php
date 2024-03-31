@@ -21,6 +21,9 @@ use Illuminate\Support\Collection;
  */
 class Project
 {
+    /**
+     * @return Collection<int, array<string, mixed>>
+     */
     public static function all(): Collection
     {
         return collect([

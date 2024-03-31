@@ -34,6 +34,7 @@ If you need help using this sprinkle or found any bug, feels free to open an iss
 
 | UserFrosting Version | FormGenerator Version |
 | :------------------: | :-------------------: |
+|        5.1.x         |         5.1.x         |
 |        5.0.x         |         5.0.x         |
 |        4.4.x         |         4.x.x         |
 |        4.3.x         |    [3.0.x] & 4.0.x    |
@@ -49,14 +50,14 @@ To install FormGenerator in your sprinkle :
 
 1. Install FormGenerator through Composer:
     ```
-    composer require lcharette/uf_formgenerator "^5.0"
+    composer require lcharette/uf_formgenerator "~5.1.0"
     ```
 
 2. Add `UserFrosting\Sprinkle\FormGenerator\FormGenerator` to your Sprinkle Recipe sprinkle method. 
 
 3. To use the frontend helper, first install the npm dependency:
     ```
-    npm install --save @lcharette/formgenerator
+    npm install --save @lcharette/formgenerator@~5.1.0
     ```
 
 4. Then add this entry to your `webpack.config.js`, in the `sprinkles` list : 

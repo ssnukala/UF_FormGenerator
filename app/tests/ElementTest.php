@@ -11,7 +11,7 @@
 namespace UserFrosting\Sprinkle\FormGenerator\Tests;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Sprinkle\FormGenerator\Element;
 use UserFrosting\Sprinkle\FormGenerator\Element\Input;
 use UserFrosting\Sprinkle\FormGenerator\Element\InputInterface;
@@ -38,7 +38,7 @@ class ElementTest extends TestCase
     {
         // Get Schema
         $loader = new YamlFileLoader(__DIR__ . '/data/elements.json');
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
 
         // Get InputInterface from the `$elementName` in the schema
         $inputSchema = $schema[$elementName]['form'];
