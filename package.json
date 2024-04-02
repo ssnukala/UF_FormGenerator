@@ -26,10 +26,8 @@
         "webpack.config.js",
         "webpack.entries.js"
     ],
-    "dependencies": {
-        "@userfrosting/theme-adminlte": "~5.1.0"
-    },
     "devDependencies": {
+        "@userfrosting/theme-adminlte": "~5.1.0",
         "@symfony/webpack-encore": "^4.4.0",
         "sass": "^1.51.0",
         "webpack-notifier": "^1.14.1"

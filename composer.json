@@ -23,8 +23,8 @@
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.0",
         "phpunit/phpunit": "^9.5",
-        "league/factory-muffin": "^3.0",
-        "league/factory-muffin-faker": "^2.0",
+        "fakerphp/faker": "^1.17",
+        "slam/phpstan-extensions": "^6.0",
         "userfrosting/theme-adminlte": "^5.0"
     },
     "autoload": {
