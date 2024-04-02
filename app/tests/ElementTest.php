@@ -66,7 +66,7 @@ class ElementTest extends TestCase
      *
      * @return mixed[]
      */
-    public function elementsProvider(): array
+    public static function elementsProvider(): array
     {
         return [
             // TEXT - With Null value

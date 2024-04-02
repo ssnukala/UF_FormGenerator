@@ -2,6 +2,7 @@
 
 ## [5.0.1](https://github.com/lcharette/UF_FormGenerator/compare/5.0.1...6.0.0)
 - Require UserFrosting 5.1
+- Update PHPUnit 10
 
 ## [5.0.1](https://github.com/lcharette/UF_FormGenerator/compare/5.0.0...5.0.1)
 - Update PHP & JS dependencies

@@ -71,11 +71,8 @@ class FormTest extends TestCase
      *
      * @return mixed[]
      */
-    public function formProvider(): array
+    public static function formProvider(): array
     {
-        $stub = $this->createMock(Model::class);
-        $stub->method('toArray')->willReturn(['name' => 'Bar project']);
-
         return [
             // WITH NO DATA
             [
@@ -244,7 +241,7 @@ class FormTest extends TestCase
             // WITH DATA AS MODEL
             [
                 '/good.json',
-                $stub,
+                new MockModel(),
                 [
                     'name' => [
                         'autocomplete' => 'off',
@@ -679,5 +676,14 @@ class CustomInputStub extends Input
             'id'           => 'field_' . $this->name,
             'foo'          => 'bar',
         ], $this->element);
+    }
+}
+
+class MockModel extends Model
+{
+    /** @return array<string, string> */
+    public function toArray()
+    {
+        return ['name' => 'Bar project'];
     }
 }
