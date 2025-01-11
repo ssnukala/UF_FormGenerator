@@ -63,4 +63,10 @@
 {% block scripts_page %}
     <!-- Include page-specific JS -->
     {{ encore_entry_script_tags('widget.formGenerator') }}
+
+    <script>
+    // Initialize form generator here instead of the plugin file
+        $(".js-displayForm").formGenerator();
+        $(".js-displayConfirm").formGenerator("confirm");
+    </script>
 {% endblock %}
