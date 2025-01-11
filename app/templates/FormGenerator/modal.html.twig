@@ -48,7 +48,7 @@
     <!-- Need to reload and reaply those since we're in modal -->
     <script>
         // Load the validator rules for this form
-        var validators = {{validators|default('{}')| raw}};
+        var validators = {{validators|default('{}')| json_encode(constant('JSON_PRETTY_PRINT')) | raw}};
 
         $(function() {
             $('#{{box_id}}').iCheck({
